@@ -20,9 +20,18 @@ class CounterService : AccessibilityService() {
     private var attached = false
     private var inPlayer = false
     private var lastTitle = ""
-    
-    private fun count(): Int =
-        getSharedPreferences("yt", MODE_PRIVATE).getInt("n", 0)
+
+    private fun today(): String =
+        java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+            .format(java.util.Date())
+
+    private fun count(): Int {
+        val p = getSharedPreferences("yt", MODE_PRIVATE)
+        if (p.getString("day", "") != today()) {
+            p.edit().putString("day", today()).putInt("n", 0).apply()
+        }
+        return p.getInt("n", 0)
+    }
         
     private fun bump() {
         val n = count() + 1
